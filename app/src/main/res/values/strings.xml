@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Attendance Manager</string>
+    <string name="welcomeText"> Welcome </string>
+    <string name="introText">"    "Manage All Your Attendance"    "</string>
+    <string name="introText2">  At One Place  </string>
+    <string name="get_started">Get Started</string>
+    <string name="userID">User Id</string>
+    <string name="userPassword">Password</string>
+    <string name="viewCourses">View Courses</string>
+    <string name="viewTeachers">View Teachers</string>
+    <string name="enrollStudent">Enroll Student</string>
+    <string name="courseId">Course Id</string>
+    <string name="courseName">Course Name</string>
+    <string name="courseDept">Course Department</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+</resources>
