@@ -56,7 +56,11 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
+<<<<<<< HEAD
         android:text="Button"
+=======
+        android:text="@string/login"
+>>>>>>> 9be80cbb84074cefe6d5253e9a12c73e30170825
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

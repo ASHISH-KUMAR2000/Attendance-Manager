@@ -3,7 +3,8 @@ package com.ashish.attendancemanager.ui;
 import com.ashish.attendancemanager.model.User;
 
 public class UserApi {
-    private String userId, userName, userPassword, userEmail, userPhoneNumber, courseEnrolled;
+
+    private String userId, userName, userPassword, userEmail, userPhoneNumber;
 
     private static UserApi instance;
 
@@ -22,7 +23,6 @@ public class UserApi {
         instance.userPassword = user.getUserPassword();
         instance.userEmail = user.getUserEmail();
         instance.userPhoneNumber = user.getUserPhoneNumber();
-        instance.courseEnrolled = user.getCourseEnrolled();
     }
 
     public String getUserId() {
@@ -65,11 +65,4 @@ public class UserApi {
         this.userPhoneNumber = userPhoneNumber;
     }
 
-    public String getCourseEnrolled() {
-        return courseEnrolled;
-    }
-
-    public void setCourseEnrolled(String courseEnrolled) {
-        this.courseEnrolled = courseEnrolled;
-    }
 }

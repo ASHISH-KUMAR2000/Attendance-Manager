@@ -14,4 +14,17 @@
     <string name="courseDept">Course Department</string>
     <string name="add">Add</string>
     <string name="remove">Remove</string>
+<<<<<<< HEAD
+=======
+    <string name="teacherName">Name</string>
+    <string name="teacherDesignation">Designation</string>
+    <string name="teacherDepartment">Department</string>
+    <string name="teacherMobile_no">Mobile No.</string>
+    <string name="teacherEmail">Email</string>
+    <string name="login">Login</string>
+    <string name="teacher_email">Email</string>
+    <string name="teacher_mobile_number">Mobile Number</string>
+    <string name="teacher_password">Password</string>
+    <string name="student_id">Student ID</string>
+>>>>>>> 9be80cbb84074cefe6d5253e9a12c73e30170825
 </resources>

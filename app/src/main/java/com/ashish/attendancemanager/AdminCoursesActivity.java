@@ -54,10 +54,10 @@ public class AdminCoursesActivity extends AppCompatActivity {
 
         courseInfoList = new ArrayList<>();
 
-        getCourseInfoFromeFireStore();
+        getCourseInfoFromFireStore();
     }
 
-    private void getCourseInfoFromeFireStore() {
+    private void getCourseInfoFromFireStore() {
         mDatabase.child("CourseInfo")
                 .addValueEventListener(new ValueEventListener() {
                     @Override

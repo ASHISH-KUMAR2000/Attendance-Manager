@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddRemoveCourseActivity"></activity>
+        <activity android:name=".AddRemoveStudentActivity"></activity>
+        <activity android:name=".AdminStudentsActivity" />
+        <activity android:name=".AddRemoveTeacherActivity" />
+        <activity android:name=".AdminTeachersActivity" />
+        <activity android:name=".AddRemoveCourseActivity" />
         <activity android:name=".AdminCoursesActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".LoginActivity" />

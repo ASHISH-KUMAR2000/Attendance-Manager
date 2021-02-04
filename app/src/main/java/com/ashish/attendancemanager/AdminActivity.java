@@ -33,9 +33,11 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.adminActivity_teacherActivityButton:
                 //Goto Admin Teacher Activity
+                startActivity(new Intent(AdminActivity.this, AdminTeachersActivity.class));
                 break;
             case R.id.adminActivity_studentActivityButton:
                 //Goto Admin Student Activity
+                startActivity(new Intent(AdminActivity.this, AdminStudentsActivity.class));
                 break;
         }
     }

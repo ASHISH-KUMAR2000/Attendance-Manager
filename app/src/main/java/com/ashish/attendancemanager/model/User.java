@@ -1,27 +1,20 @@
 package com.ashish.attendancemanager.model;
 
 public class User {
-    private String userId, userName, userPassword, userEmail, userPhoneNumber, courseEnrolled;
+
+    private String userId, userName, userPassword, userEmail, userPhoneNumber;
 
     public User() {
     }
 
     public User(String userId, String userName, String userPassword,
-                String userEmail, String userPhoneNumber, String courseEnrolled) {
+                String userEmail, String userPhoneNumber) {
         this.userId = userId;
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
-        this.courseEnrolled = courseEnrolled;
-    }
 
-    public String getCourseEnrolled() {
-        return courseEnrolled;
-    }
-
-    public void setCourseEnrolled(String courseEnrolled) {
-        this.courseEnrolled = courseEnrolled;
     }
 
     public String getUserId() {
