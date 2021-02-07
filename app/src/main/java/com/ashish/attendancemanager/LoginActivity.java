@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ashish.attendancemanager.model.User;
 import com.ashish.attendancemanager.ui.UserApi;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText userIdEditText, passwordEditText;
     private Button loginButton;
     private String userId, password, loginType;
+    private ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -47,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         userIdEditText = findViewById(R.id.loginActivity_userId);
         passwordEditText = findViewById(R.id.loginActivity_userPassword);
         loginButton = findViewById(R.id.loginActivity_loginButton);
+        progressBar = findViewById(R.id.loginActivity_progressBar);
 
         dropDown = findViewById(R.id.loginActivity_spinner);
         //create a list of items for the spinner.
@@ -68,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!TextUtils.isEmpty(userId)&&!TextUtils.isEmpty(password)&&
                         !TextUtils.isEmpty(loginType)){
-
+                    progressBar.setVisibility(View.VISIBLE);
                     verifyUser(userId, password, loginType);
-
+                    progressBar.setVisibility(View.INVISIBLE);
                 } else{
                     Toast.makeText(LoginActivity.this,
                             "Empty Text Field Not Allowed",
@@ -109,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -130,7 +135,13 @@ public class LoginActivity extends AppCompatActivity {
 
                         // ...
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void switchUser(String loginType) {
@@ -139,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, AdminActivity.class));
         } else if(loginType.equals("Teacher")){
             // Goto Teacher View
+            startActivity(new Intent(LoginActivity.this, TeacherActivity.class));
         } else{
             // Goto Student View
         }

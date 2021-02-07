@@ -4,83 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddRemoveCourseActivity">
+    tools:context=".TeacherAddClass">
 
     <Button
-        android:id="@+id/addRemoveCourse_removeButton"
+        android:id="@+id/teacherAddClass_CreateClassbutton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         android:background="@android:color/transparent"
-        android:text="@string/remove"
+        android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addRemoveCourse_addButton"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_AddTimebutton"
+        app:layout_constraintVertical_bias="0.132" />
 
     <EditText
-        android:id="@+id/addRemoveCourse_deptEditView"
+        android:id="@+id/teacherAddClass_courseIdEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         android:ems="10"
-        android:hint="@string/courseDept"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addRemoveCourse_nameEditView" />
-
-    <EditText
-        android:id="@+id/addRemoveCourse_nameEditView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="50dp"
-        android:ems="10"
-        android:hint="@string/courseName"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addRemoveCourse_idEditView" />
-
-    <EditText
-        android:id="@+id/addRemoveCourse_idEditView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="50dp"
-        android:ems="10"
-        android:inputType="textPersonName"
         android:hint="@string/courseId"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/addRemoveCourse_addButton"
+    <TextView
+        android:id="@+id/teacherAddClass_courseTimingtextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="50dp"
-        android:text="@string/add"
-        android:background="@android:color/transparent"
+        android:hint="@string/timing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_courseIdEditText" />
+
+    <Spinner
+        android:id="@+id/teacherAddClass_Weekspinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addRemoveCourse_deptEditView" />
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_courseTimingtextView" />
+
+    <Spinner
+        android:id="@+id/teacherAddClass_Fromspinner"
+        android:layout_width="136dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_Weekspinner" />
+
+    <Spinner
+        android:id="@+id/teacherAddClass_Tillspinner"
+        android:layout_width="136dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.789"
+        app:layout_constraintStart_toEndOf="@+id/teacherAddClass_Fromspinner"
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_Weekspinner" />
+
+    <Button
+        android:id="@+id/teacherAddClass_AddTimebutton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/transparent"
+        android:text="@string/add_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacherAddClass_Fromspinner" />
 
     <ProgressBar
-        android:id="@+id/addRemoveCourse_progressBar"
+        android:id="@+id/teacherAddClass_progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,10 +1,13 @@
 package com.ashish.attendancemanager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import com.ashish.attendancemanager.model.Student;
 import com.ashish.attendancemanager.model.Teacher;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +34,11 @@ public class AdminStudentsActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private EditText studentIdEditText, courseIdEditText;
-    private String studentId, courseId;
+    private String studentId, courseId, currYear;
     private Button enrollButton, unenrollButton;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +67,57 @@ public class AdminStudentsActivity extends AppCompatActivity {
             }
         });
 
+        LocalDate currentDate = LocalDate.now();
+        int y = currentDate.getYear();
+        currYear = Integer.toString(y);
+
     }
 
     private void AddEnrolledCourse() {
+
         studentId = studentIdEditText.getText().toString().trim();
         courseId = courseIdEditText.getText().toString().trim();
 
+        if(!TextUtils.isEmpty(studentId)&&
+        !TextUtils.isEmpty(courseId)) {
+            addToStudentCourseEnrolled(studentId, courseId);
+            addToCourseEnrolledDatabase(studentId, courseId);
+        } else{
+            Toast.makeText(AdminStudentsActivity.this,
+                    "Empty fields not allowed.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private void addToCourseEnrolledDatabase(final String studentId, final String courseId) {
+        mDatabase.child("CourseEnrolled").child(courseId).child(currYear)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()) {
+                            String cousrseEnrolled = snapshot.getValue(String.class);
+                            if (!TextUtils.isEmpty(cousrseEnrolled)) {
+                                cousrseEnrolled += ",";
+                            }
+                            cousrseEnrolled += studentId;
+                            mDatabase.child("CourseEnrolled").child(courseId).child(currYear)
+                                    .setValue(cousrseEnrolled);
+                        } else{
+                            mDatabase.child("CourseEnrolled").child(courseId).child(currYear)
+                                    .setValue(studentId);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void addToStudentCourseEnrolled(final String studentId, final String courseId) {
         mDatabase.child("Student").child(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
