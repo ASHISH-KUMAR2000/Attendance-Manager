@@ -1,6 +1,7 @@
 package com.ashish.attendancemanager.model;
 
 public class User {
+
     private String userId, userName, userPassword, userEmail, userPhoneNumber;
 
     public User() {

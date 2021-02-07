@@ -3,6 +3,7 @@ package com.ashish.attendancemanager.ui;
 import com.ashish.attendancemanager.model.User;
 
 public class UserApi {
+
     private String userId, userName, userPassword, userEmail, userPhoneNumber;
 
     private static UserApi instance;
@@ -22,7 +23,6 @@ public class UserApi {
         instance.userPassword = user.getUserPassword();
         instance.userEmail = user.getUserEmail();
         instance.userPhoneNumber = user.getUserPhoneNumber();
-
     }
 
     public String getUserId() {
@@ -64,6 +64,5 @@ public class UserApi {
     public void setUserPhoneNumber(String userPhoneNumber) {
         this.userPhoneNumber = userPhoneNumber;
     }
-
 
 }

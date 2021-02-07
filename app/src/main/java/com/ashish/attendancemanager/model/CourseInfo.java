@@ -12,6 +12,12 @@ public class CourseInfo {
         this.courseDepartment = courseDepartment;
     }
 
+    public CourseInfo(CourseInfo courseInfo) {
+        this.courseId = courseInfo.getCourseId();
+        this.courseName = courseInfo.getCourseName();
+        this.courseDepartment = courseInfo.getCourseDepartment();
+    }
+
     public String getCourseId() {
         return courseId;
     }
