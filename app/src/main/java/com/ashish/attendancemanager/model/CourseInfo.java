@@ -1,6 +1,8 @@
 package com.ashish.attendancemanager.model;
 
-public class CourseInfo {
+import java.io.Serializable;
+
+public class CourseInfo implements Serializable {
     private String courseId, courseName, courseDepartment;
 
     public CourseInfo() {
@@ -10,6 +12,12 @@ public class CourseInfo {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDepartment = courseDepartment;
+    }
+
+    public CourseInfo(CourseInfo courseInfo) {
+        this.courseId = courseInfo.getCourseId();
+        this.courseName = courseInfo.getCourseName();
+        this.courseDepartment = courseInfo.getCourseDepartment();
     }
 
     public String getCourseId() {
