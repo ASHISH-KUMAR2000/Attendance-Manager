@@ -153,6 +153,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, TeacherActivity.class));
         } else{
             // Goto Student View
+            Intent intent = new Intent(LoginActivity.this,  StudentCourseActivity.class);
+            intent.putExtra("STUDENT_ID",userId);
+
+            startActivity(intent);
         }
         finish();
     }

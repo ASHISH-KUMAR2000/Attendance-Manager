@@ -106,7 +106,7 @@ public class TeacherClassAttendance extends AppCompatActivity implements View.On
     }
 
     private void generateQrCode() {
-        String text="69";
+        String text="CS16105,20/02/2021,1 - 1";
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
             BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,300,300);

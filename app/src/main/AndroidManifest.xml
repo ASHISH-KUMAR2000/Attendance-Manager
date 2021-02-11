@@ -9,10 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".StudentCourseAttendance"></activity>
+        <activity android:name=".StudentScannerActivity" />
+        <activity android:name=".StudentCourseActivity" />
         <activity
             android:name=".TeacherClassAttendance"
             android:label="@string/title_activity_teacher_class_attendance"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TeacherAddClass" />
         <activity android:name=".TeacherActivity" />
         <activity android:name=".AddRemoveStudentActivity" />
@@ -31,5 +34,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

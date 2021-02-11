@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ashish.attendancemanager.R;
+import com.ashish.attendancemanager.model.ClassInfo;
 import com.ashish.attendancemanager.model.CourseInfo;
 
 import java.util.List;
@@ -63,5 +64,11 @@ public class AdminCoursesRecyclerAdapter extends RecyclerView.Adapter<AdminCours
             courseNameTextView = itemView.findViewById(R.id.row_courseNameTextView);
             courseDepartmentTextView = itemView.findViewById(R.id.row_courseDepartmentTextView);
         }
+    }
+    public CourseInfo getAdapterPositionCourseInfo(int position) {
+        if (position >= 0 && position<courseList.size()){
+            return courseList.get(position);
+        }
+        return null;
     }
 }

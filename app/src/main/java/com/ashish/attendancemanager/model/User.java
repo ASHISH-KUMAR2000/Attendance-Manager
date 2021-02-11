@@ -1,6 +1,8 @@
 package com.ashish.attendancemanager.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String userId, userName, userPassword, userEmail, userPhoneNumber;
 

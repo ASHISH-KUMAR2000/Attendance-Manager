@@ -1,10 +1,11 @@
 package com.ashish.attendancemanager.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Student extends User{
+public class Student extends User implements Serializable {
     //private String userId, userName, userPassword, userEmail, userPhoneNumber;
     private String deptName;
     private ArrayList<String> courseEnrolled;
@@ -40,5 +41,6 @@ public class Student extends User{
 
         this.courseEnrolled.add(course);
     }
+
 
 }

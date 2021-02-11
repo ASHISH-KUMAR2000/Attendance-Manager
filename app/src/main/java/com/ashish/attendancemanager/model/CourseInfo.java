@@ -1,6 +1,8 @@
 package com.ashish.attendancemanager.model;
 
-public class CourseInfo {
+import java.io.Serializable;
+
+public class CourseInfo implements Serializable {
     private String courseId, courseName, courseDepartment;
 
     public CourseInfo() {
