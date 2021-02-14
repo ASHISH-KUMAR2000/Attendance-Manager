@@ -7,10 +7,10 @@
 
     <TextView
         android:id="@+id/serial_numberTextView"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:text="S.No."
+        android:text=" S.No. "
         android:background="@drawable/table_content_cell_bg"
         android:textSize="18sp" />
 
@@ -19,19 +19,27 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:text="Date"
+        android:text=" Date "
         android:background="@drawable/table_content_cell_bg"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/timeDurationTextView"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:text="Time Duration"
+        android:text=" Time Duration "
         android:background="@drawable/table_content_cell_bg"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/row_studentAttendance_PresentTextView"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:text="Present"
+        android:background="@drawable/table_content_cell_bg"
+        android:textSize="18sp"/>
 
 
 </LinearLayout>

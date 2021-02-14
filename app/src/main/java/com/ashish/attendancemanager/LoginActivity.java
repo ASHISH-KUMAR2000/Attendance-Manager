@@ -1,8 +1,5 @@
 package com.ashish.attendancemanager;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ashish.attendancemanager.model.User;
 import com.ashish.attendancemanager.ui.UserApi;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         userIdEditText = findViewById(R.id.loginActivity_userId);
         passwordEditText = findViewById(R.id.loginActivity_userPassword);
         loginButton = findViewById(R.id.loginActivity_loginButton);
-        progressBar = findViewById(R.id.loginActivity_progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.loginActivity_progressBar);
 
         dropDown = findViewById(R.id.loginActivity_spinner);
         //create a list of items for the spinner.
@@ -62,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +72,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!TextUtils.isEmpty(userId)&&!TextUtils.isEmpty(password)&&
                         !TextUtils.isEmpty(loginType)){
-                    progressBar.setVisibility(View.VISIBLE);
+
+
                     verifyUser(userId, password, loginType);
-                    progressBar.setVisibility(View.INVISIBLE);
+
                 } else{
                     Toast.makeText(LoginActivity.this,
                             "Empty Text Field Not Allowed",
@@ -86,7 +87,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyUser(final String userId, final String password, String loginType) {
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        progressBar.setVisibility(View.VISIBLE);
+
         mDatabase.child(loginType).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -102,9 +104,13 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else{
                         Toast.makeText(LoginActivity.this,
-                                "Wrong Credentials",
+                                "Wrong Credential",
                                 Toast.LENGTH_LONG).show();
                     }
+                } else{
+                    Toast.makeText(LoginActivity.this,
+                            "Wrong Credential",
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -113,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+        progressBar.setVisibility(View.GONE);
 
     }
 
@@ -145,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void switchUser(String loginType) {
+        progressBar.setVisibility(View.GONE);
         if(loginType.equals("Admin")){
             // Goto Admin View
             startActivity(new Intent(LoginActivity.this, AdminActivity.class));

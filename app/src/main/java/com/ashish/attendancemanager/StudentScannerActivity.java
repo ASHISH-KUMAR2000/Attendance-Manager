@@ -1,19 +1,16 @@
 package com.ashish.attendancemanager;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ashish.attendancemanager.model.ClassDateInfo;
 import com.ashish.attendancemanager.model.CourseInfo;
-import com.ashish.attendancemanager.model.Student;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.ashish.attendancemanager.ui.UserApi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,13 +24,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class StudentScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
+    private static final String TAG = "StudentScannerActivity";
     ZXingScannerView scannerView;
-    private Student student= null;
+    private String userId;
     DatabaseReference mDataBase;
     CourseInfo course;
     ClassDateInfo classDateInfo;
@@ -44,7 +45,8 @@ public class StudentScannerActivity extends AppCompatActivity implements ZXingSc
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
         //setContentView(R.layout.activity_student_scanner);
-        student =  (Student) getIntent().getSerializableExtra("STUDENT_OBJECT");
+        //student =  (Student) getIntent().getSerializableExtra("STUDENT_OBJECT");
+        userId = UserApi.getInstance().getUserId();
         mDataBase = FirebaseDatabase.getInstance().getReference();
 
         Dexter.withContext(getApplicationContext())
@@ -69,12 +71,24 @@ public class StudentScannerActivity extends AppCompatActivity implements ZXingSc
 
     @Override
     public void handleResult(Result rawResult) {
-//        Toast.makeText(StudentScannerActivity.this,rawResult.getText().toString().trim(),
-//                Toast.LENGTH_SHORT).show();
+
+
         String scannedData = rawResult.getText().toString().trim();
 
-        addStudentAttendanceInfo(scannedData);
-        Log.d("scannedData", scannedData);
+        //verify if this is valid qr code or not
+
+
+        String[] token = scannedData.split(",");
+        String validTime = token[3];
+        long timeInSec = Long.parseLong(validTime);
+        if(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()<timeInSec) {
+            addStudentAttendanceInfo(scannedData);
+        } else{
+            Toast.makeText(StudentScannerActivity.this, "Class time is over.",
+                    Toast.LENGTH_LONG).show();
+            // goBack
+        }
+
     }
 
 
@@ -94,51 +108,24 @@ public class StudentScannerActivity extends AppCompatActivity implements ZXingSc
 
     private void addStudentAttendanceInfo(String scannedData) {
 
-        String[] token= scannedData.split(",");
-        final String courseid = token[0];
+        String[] token = scannedData.split(",");
+
+        final String courseId = token[0];
         final String date = token[1];
-        final String time = token[2];
+        final String duration = token[2];
+
         int n = token[1].length();
         final String year = token[1].substring(n-4);
 
-
-
-        mDataBase.child("CourseInfo").child(courseid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDataBase.child("StudentAttendance").child(userId)
+                .child(year).child(courseId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                   course = snapshot.getValue(CourseInfo.class);
-                    Log.d("Data Mining", course.getCourseId());
-                   final String dateTime =  date+ " "+time;
-                   if(course != null) {
-                       mDataBase.child("StudentAttendance").child(student.getUserId()).child(year)
-                               .child(course.getCourseId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                           @Override
-                           public void onDataChange(@NonNull DataSnapshot snapshot) {
-                               if(snapshot.exists()) {
-                                   ClassDateInfo classDateInfo1 = snapshot.getValue(ClassDateInfo.class);
-                                   Log.d("DateList", classDateInfo1.getDateTimeListInfo());
-                                   classDateInfo1.setDateTimeListInfo(classDateInfo1.getDateTimeListInfo()+","+dateTime);
-                                   classDateInfo = classDateInfo1;
-                                   Log.d("DateList2", classDateInfo.getDateTimeListInfo());
-                                   addClassAttendanceToFirebase(year,dateTime);
-                               }
-                               else{
-                                   classDateInfo = new ClassDateInfo(course,dateTime);
-                                   addClassAttendanceToFirebase(year,dateTime);
-                               }
-                           }
-
-                           @Override
-                           public void onCancelled(@NonNull DatabaseError error) {
-
-                           }
-                       });
-
-
-                   }
-
-                }
+                String str = snapshot.getValue(String.class);
+                str = str.substring(0, str.length()-1);
+                str+="1";
+                mDataBase.child("StudentAttendance").child(userId)
+                        .child(year).child(courseId).setValue(str);
             }
 
             @Override
@@ -147,26 +134,42 @@ public class StudentScannerActivity extends AppCompatActivity implements ZXingSc
             }
         });
 
+        final String directoryDate = date.replace("/", "");
+        Log.d(TAG, directoryDate);
+
+        mDataBase.child("CourseAttendance").child(courseId)
+                .child(year).child(directoryDate)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()) {
+                            String str = snapshot.getValue(String.class);
+                            String[] lst = str.split(",");
+                            int idx = Arrays.binarySearch(lst, userId + duration + "0");
+                            if (idx >= 0 && idx < lst.length) {
+                                lst[idx] = userId + duration + "1";
+                            }
+                            str = "";
+                            str += lst[0];
+                            for (int i = 1; i < lst.length; i++) {
+                                str += ",";
+                                str += lst[i];
+                            }
+                            mDataBase.child("CourseAttendance").child(courseId)
+                                    .child(year).child(directoryDate).setValue(str);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+        Toast.makeText(StudentScannerActivity.this, "Added",
+                Toast.LENGTH_LONG).show();
+
     }
 
-    private void addClassAttendanceToFirebase(String year, final String dateTime) {
 
-        mDataBase.child("StudentAttendance").child(student.getUserId()).child(year)
-                .child(course.getCourseId()).setValue(classDateInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(StudentScannerActivity.this, "Student Attendance Added Successfully",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(StudentScannerActivity.this, "Something went wrong.\nPlease check " +
-                                "your internet connection.",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-    }
 }

@@ -1,25 +1,20 @@
 package com.ashish.attendancemanager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.ashish.attendancemanager.model.ClassInfo;
-import com.ashish.attendancemanager.model.CourseInfo;
-import com.ashish.attendancemanager.model.Teacher;
-import com.ashish.attendancemanager.ui.AdminCoursesRecyclerAdapter;
 import com.ashish.attendancemanager.ui.RecyclerItemClickListener;
 import com.ashish.attendancemanager.ui.TeacherRecycleAdapter;
 import com.ashish.attendancemanager.ui.UserApi;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +29,6 @@ public class TeacherActivity extends AppCompatActivity {
     private static final String TAG = "TeacherActivity";
     ArrayList<ClassInfo> classInfoList;
     private DatabaseReference mDatabase;
-    UserApi userApi;
 
     private RecyclerView recyclerView;
     private TeacherRecycleAdapter teacherRecycleAdapter;
@@ -58,7 +52,6 @@ public class TeacherActivity extends AppCompatActivity {
         });
 
         classInfoList = new ArrayList<>();
-        userApi = UserApi.getInstance();
         getAllClassesFromDatabase();
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(TeacherActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
@@ -77,22 +70,24 @@ public class TeacherActivity extends AppCompatActivity {
     }
 
     private void getAllClassesFromDatabase() {
-        Query query = mDatabase.child("TeacherCourse").child(userApi.getUserId());
+        Log.d(TAG, UserApi.getInstance().getUserId());
+        Query query = mDatabase.child("TeacherCourse").child(UserApi.getInstance().getUserId());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                classInfoList.clear();
-                for(DataSnapshot postSnapshot : snapshot.getChildren()){
-                    for(DataSnapshot ps : postSnapshot.getChildren()) {
-                        ClassInfo classInfo = ps.getValue(ClassInfo.class);
-                        classInfoList.add(classInfo);
+                if(snapshot.exists()) {
+                    classInfoList.clear();
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        for (DataSnapshot ps : postSnapshot.getChildren()) {
+                            ClassInfo classInfo = ps.getValue(ClassInfo.class);
+                            classInfoList.add(classInfo);
+                        }
                     }
-                }
-                teacherRecycleAdapter = new TeacherRecycleAdapter(TeacherActivity.this,
+                    teacherRecycleAdapter = new TeacherRecycleAdapter(TeacherActivity.this,
                             classInfoList);
-                recyclerView.setAdapter(teacherRecycleAdapter);
-                teacherRecycleAdapter.notifyDataSetChanged();
-
+                    recyclerView.setAdapter(teacherRecycleAdapter);
+                    teacherRecycleAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

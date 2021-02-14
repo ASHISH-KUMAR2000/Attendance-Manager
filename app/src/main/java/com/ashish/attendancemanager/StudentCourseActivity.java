@@ -1,14 +1,14 @@
 package com.ashish.attendancemanager;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import com.ashish.attendancemanager.model.CourseInfo;
 import com.ashish.attendancemanager.model.Student;
@@ -32,9 +32,9 @@ public class StudentCourseActivity extends AppCompatActivity {
 
     private List<CourseInfo> courseInfoList;
     private  HashMap<String, Integer> map = new HashMap<>();
+    private  HashMap<String, String> yearMap = new HashMap<>();
     private RecyclerView recyclerView;
     private AdminCoursesRecyclerAdapter studentCoursesRecyclerAdapter;
-    private Student student = null;
     private String studentId;
 
     @Override
@@ -50,23 +50,6 @@ public class StudentCourseActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         studentId =intent.getStringExtra("STUDENT_ID");
-        Log.d("studentid", studentId);
-
-        mDatabase.child("Student").child(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                   Student s = snapshot.getValue(Student.class);
-                   if(s!= null) {
-                       student = s;
-                   }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
 
         FloatingActionButton fab = findViewById(R.id.studentCourses_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +57,7 @@ public class StudentCourseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Goto QR SCANNER
                 Intent intent = new Intent(StudentCourseActivity.this,StudentScannerActivity.class);
-                intent.putExtra("STUDENT_OBJECT",student);
+                //intent.putExtra("STUDENT_OBJECT",student);
 
                 startActivity(intent);
 
@@ -93,11 +76,9 @@ public class StudentCourseActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 CourseInfo courseinfo = studentCoursesRecyclerAdapter.getAdapterPositionCourseInfo(position);
                 Intent intent = new Intent(StudentCourseActivity.this,StudentCourseAttendance.class);
-                intent.putExtra("STUDENT_OBJECT",student);
                 intent.putExtra("COURSE_ID",courseinfo.getCourseId());
                 intent.putExtra("COURSE_NAME",courseinfo.getCourseName());
                 startActivity(intent);
-
             }
         }));
 
@@ -108,15 +89,24 @@ public class StudentCourseActivity extends AppCompatActivity {
         mDatabase.child("Student").child(studentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Student student = snapshot.getValue(Student.class);
+                if(snapshot.exists()) {
+                    Student student = snapshot.getValue(Student.class);
 
-                if(student != null) {
-                    courseEnrolledList = student.getCourseEnrolled();
+                    if (student != null) {
+                        courseEnrolledList = student.getCourseEnrolled();
 
-                    for(int i=0; i<courseEnrolledList.size();i++) {
-                        map.put(courseEnrolledList.get(i),1);
+                        String str;
+
+                        for (int i = 0; i < courseEnrolledList.size(); i++) {
+                            str = "";
+                            str = courseEnrolledList.get(i);
+                            if (!TextUtils.isEmpty(str)) {
+                                map.put(str.substring(0, str.length() - 5), 1);
+                                yearMap.put(str.substring(0, str.length() - 5), str.substring(str.length() - 4));
+                            }
+                        }
+
                     }
-
                 }
             }
 
@@ -134,6 +124,7 @@ public class StudentCourseActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     CourseInfo courseInfo = postSnapshot.getValue(CourseInfo.class);
                     if(map.containsKey(courseInfo.getCourseId())) {
+                        courseInfo.setCourseId(courseInfo.getCourseId()+"-"+yearMap.get(courseInfo.getCourseId()));
                         courseInfoList.add(courseInfo);
                     }
                 }
