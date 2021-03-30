@@ -1,15 +1,16 @@
 package com.ashish.attendancemanager;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashish.attendancemanager.model.Teacher;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,12 +19,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class AddRemoveTeacherActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "AddRemoveTeacherActivity";
     private EditText teacherNameEditText, teacherPasswordEditText, teacherDesignationEditText,
             teacherDeptEditText, teacherMobileNoEditText, teacherEmailEditText;
     private Button addButton, removeButton;
@@ -83,6 +84,11 @@ public class AddRemoveTeacherActivity extends AppCompatActivity implements View.
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     // stop loading screen
+                                    String uid = task.getResult().getUser().getUid();
+                                    mDatabase.child("UserId").child(uid)
+                                            .setValue(teacherId);
+                                    Log.d(TAG, uid);
+
                                     addTeacherToDatabase(teacherId, teacherName, teacherPassword,
                                             teacherDept, teacherDesignation, teacherMobileNo,
                                             teacherEmail);

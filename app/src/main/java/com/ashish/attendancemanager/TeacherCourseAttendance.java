@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ashish.attendancemanager.Utility.SendEmailTask;
+import com.ashish.attendancemanager.model.Student;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TeacherCourseAttendance extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,6 +37,8 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
     private TableLayout stk;
     HashMap<String, String> map = new HashMap<>();
     HashMap<String, Integer> percentageMap = new HashMap<>();
+    HashMap<String, String> studentIdToMail = new HashMap<>();
+
     List<String> dateList = new ArrayList<>();
     List<String> studentEnrolledList = new ArrayList<>();
     Double totalDuration=0d;
@@ -42,6 +48,9 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
     private Button showButton, sendButton;
     private int currentPercentage = 101;
     private String currentPercentageString;
+
+    ArrayList<String> emailList ;
+    private String message, subject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +65,16 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
         percentageEditText = findViewById(R.id.teacherCourseAttendance_percentageEditView);
         showButton = findViewById(R.id.teacherCourseAttendance_showButton);
         sendButton = findViewById(R.id.teacherCourseAttendance_sentEmailButton);
+        percentageEditText.setText("0");
+
+
+        emailList = new ArrayList<>();
 
         setTitle(courseName);
+
+        //message = "BSDK aa ja class.Na tho gand mar lunga.";
+        message = "testing";
+        subject = "Shortage of Attendance";
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -104,7 +121,27 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
 
 
         getAllStudentEnrolled();
+    }
 
+    private void getEnrolledStudentEmailId() {
+        for(final String id : studentEnrolledList){
+            mDatabase.child("Student").child(id)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                Student student = snapshot.getValue(Student.class);
+                                Log.d(TAG, "onDataChange: "+student.getUserEmail() + " "+id);
+                                studentIdToMail.put(id, student.getUserEmail());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }
     }
 
 
@@ -120,7 +157,7 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
                         studentEnrolledList.add(str);
                     }
                     totalDuration = totalDuration/studentEnrolledList.size();
-                    init();
+                    getEnrolledStudentEmailId();
                 }
             }
 
@@ -167,11 +204,25 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
     }
     private void fill(){
         String currRegNo;
+        emailList.clear();
+        for (Map.Entry mapElement : studentIdToMail.entrySet()) {
+            String key = (String)mapElement.getKey();
+
+            // Add some bonus marks
+            // to all the students and print it
+            String value = (String) mapElement.getValue();
+
+            Log.d(TAG, "fill: "+ key + " " + value);
+        }
         for (int i = 0; i < studentEnrolledList.size(); i++) {
 
             currRegNo = studentEnrolledList.get(i);
 
             if((int)((percentageMap.get(currRegNo)*100)/totalDuration)>=currentPercentage) continue;
+
+            emailList.add(studentIdToMail.get(currRegNo));
+            Log.d(TAG, "fill: " + studentIdToMail.get(currRegNo));
+
             TableRow tbrow = new TableRow(this);
             TextView t1v = new TextView(this);
             t1v.setText("" + i);
@@ -231,6 +282,16 @@ public class TeacherCourseAttendance extends AppCompatActivity implements View.O
 
                 break;
             case R.id.teacherCourseAttendance_sentEmailButton:
+                for(String str: emailList){
+                    if(str!=null){
+                        Log.d(TAG, str);
+                    } else{
+                        Log.d(TAG, "NULL");
+                    }
+                }
+                SendEmailTask runnable = new SendEmailTask(TeacherCourseAttendance.this,
+                        emailList, subject, message);
+                new Thread(runnable).start();
                 break;
         }
     }

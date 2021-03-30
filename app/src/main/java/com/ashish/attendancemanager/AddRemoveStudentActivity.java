@@ -1,8 +1,5 @@
 package com.ashish.attendancemanager;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashish.attendancemanager.model.Student;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,9 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AddRemoveStudentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,6 +31,7 @@ public class AddRemoveStudentActivity extends AppCompatActivity implements View.
 
 
     private FirebaseAuth mAuth;
+
     private DatabaseReference mDatabase;
 
     @Override
@@ -77,7 +76,10 @@ public class AddRemoveStudentActivity extends AppCompatActivity implements View.
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
-                                    addStudentToDatabase(studentId, studentName, studentPassword, studentEmail, studentMobileNo, studentDept);
+                                    String uid = authResult.getUser().getUid();
+                                    mDatabase.child("UserId").child(uid)
+                                            .setValue(studentId);
+                                    addStudentToDatabase(uid, studentId, studentName, studentPassword, studentEmail, studentMobileNo, studentDept);
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -102,7 +104,8 @@ public class AddRemoveStudentActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void addStudentToDatabase(String studentId, String studentName, String studentPassword, String studentEmail, String studentMobileNo, String studentDept) {
+    private void addStudentToDatabase(String uid, String studentId, String studentName, String studentPassword, String studentEmail, String studentMobileNo, String studentDept) {
+
         ArrayList<String> courseEnrolled = new ArrayList<>();
 
         Student student = new Student(studentId, studentName, studentPassword, studentEmail, studentMobileNo, studentDept, courseEnrolled);

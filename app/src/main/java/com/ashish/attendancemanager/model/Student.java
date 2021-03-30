@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Student extends User implements Serializable {
     //private String userId, userName, userPassword, userEmail, userPhoneNumber;
     private String deptName;
-    private ArrayList<String> courseEnrolled;
+    private ArrayList<String> courseEnrolled = new ArrayList<>();
 
     public Student() {
 
@@ -38,7 +38,6 @@ public class Student extends User implements Serializable {
         this.courseEnrolled = courseEnrolled;
     }
     public void addToCourseEnrolled(String course) {
-
         this.courseEnrolled.add(course);
     }
 

@@ -6,28 +6,35 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".TeacherCourseAttendance"></activity>
         <activity android:name=".StudentCourseAttendance" />
         <activity android:name=".StudentScannerActivity" />
-        <activity android:name=".StudentCourseActivity" />
         <activity
             android:name=".TeacherClassAttendance"
             android:label="@string/title_activity_teacher_class_attendance"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AdminActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TeacherActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StudentCourseActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TeacherAddClass" />
-        <activity android:name=".TeacherActivity" />
         <activity android:name=".AddRemoveStudentActivity" />
         <activity android:name=".AdminStudentsActivity" />
         <activity android:name=".AddRemoveTeacherActivity" />
         <activity android:name=".AdminTeachersActivity" />
         <activity android:name=".AddRemoveCourseActivity" />
         <activity android:name=".AdminCoursesActivity" />
-        <activity android:name=".AdminActivity" />
+
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

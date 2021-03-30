@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ashish.attendancemanager.model.DateAttendanceInfo;
 import com.ashish.attendancemanager.ui.AttendanceTableViewAdapter;
-import com.ashish.attendancemanager.ui.UserApi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +39,7 @@ public class StudentCourseAttendance extends AppCompatActivity {
         courseID = getIntent().getExtras().getString("COURSE_ID");
         courseName = getIntent().getExtras().getString("COURSE_NAME");
         courseYear = courseID.substring(courseID.length()-4);
-        studentID = UserApi.getInstance().getUserId();
+        studentID = getIntent().getExtras().getString("STUDENT_ID");
         courseID = courseID.substring(0, courseID.length()-5);
 
         courseNameTextView = findViewById(R.id.courseNameTextView);
@@ -55,7 +54,7 @@ public class StudentCourseAttendance extends AppCompatActivity {
 
         dateSheet = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("StudentAttendance").child(studentID).child(courseYear).
+         mDatabase.child("StudentAttendance").child(studentID).child(courseYear).
                 child(courseID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -158,7 +158,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, AdminActivity.class));
         } else if(loginType.equals("Teacher")){
             // Goto Teacher View
-            startActivity(new Intent(LoginActivity.this, TeacherActivity.class));
+            Intent intent  = new Intent(LoginActivity.this,
+                    TeacherActivity.class);
+            intent.putExtra("UserId", userId);
+            startActivity(intent);
         } else{
             // Goto Student View
             Intent intent = new Intent(LoginActivity.this,  StudentCourseActivity.class);
